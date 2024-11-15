@@ -30,8 +30,6 @@ class Rating (models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     stars = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
 
-    def __str__(self):
-        return f"Rating for - {self.meal} - by {self.user}"
     
     class Meta:
         constraints = [
