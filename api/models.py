@@ -14,7 +14,21 @@ class Meal (models.Model):
     def save (self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title)
-        super().save(*args, **kwargs)      
+        super().save(*args, **kwargs)
+
+    def no_of_rating(self):
+        ratings = Rating.objects.filter(meal=self)
+        return len(ratings)
+    
+    def avg_rating(self):
+        sum = 0
+        ratings = Rating.objects.filter(meal=self)
+        for rate in ratings:
+            sum += rate.stars
+        
+        if len(ratings) > 0:
+            return sum/len(ratings)
+        return 0
 
     def __str__(self):
         return self.title

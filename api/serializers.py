@@ -8,13 +8,13 @@ from .models import Meal, Rating
 class MealSerializer(serializers.ModelSerializer):
     class Meta:
         model = Meal
-        fields = ('slug', 'title', 'description')
+        fields = ('id', 'slug', 'title', 'description', 'no_of_rating', 'avg_rating')
 
 
 class RatingSerializer(serializers.ModelSerializer):
-    meal = serializers.ReadOnlyField(source = 'meal.slug')
-    user = serializers.ReadOnlyField(source='user.username')
+    # meal = serializers.ReadOnlyField(source = 'meal.slug')
+    # user = serializers.ReadOnlyField(source='user.username')
 
     class Meta:
         model = Rating
-        fields = ('meal', 'user', 'stars')
+        fields = ('id', 'meal', 'user', 'stars')
