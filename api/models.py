@@ -5,23 +5,20 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 
 
 
-# uuid
 
 class Meal (models.Model):
     title = models.CharField(max_length=22)
     description = models.TextField(max_length=360)
-    # slug = models.SlugField(blank=True, null=True)
+    slug = models.SlugField(blank=True, null=True)
 
-    # def save (self, *args, **kwargs):
-    #     if not self.slug:
-    #         self.slug = slugify(self.title)
-    #     super().save(*args, **kwargs)      
-    @property
-    def slug(self):
-        return slugify(self.title)
+    def save (self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super().save(*args, **kwargs)      
 
     def __str__(self):
         return self.title
+    
     
 
 
