@@ -3,12 +3,37 @@ from rest_framework import viewsets, filters, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from .models import Meal, Rating
-from .serializers import MealSerializer, RatingSerializer
+from .serializers import MealSerializer, RatingSerializer, UserSerializer
 from django.contrib.auth.models import User
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.authtoken.models import Token
 
 
+
+
+
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class =UserSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    # def perform_create(self, serializer):
+    #     id = serializer.validated_data['id']
+    #     username = serializer.validated_data['username']
+    #     password = serializer.validated_data['password']
+    #     User.objects.create_user(username=username,  password=password) # create_user method for automatic password hashing..
+
+    def create (self, request, *args, **kwargs):
+        serializer = self.get_serializer(data= request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        token, created = Token.objects.get_or_create(user = serializer.instance)
+        json = {'token': token.key}
+        return Response(json, status=status.HTTP_201_CREATED)
 
 
 
@@ -16,6 +41,8 @@ class MealViewSet(viewsets.ModelViewSet):
     queryset = Meal.objects.all()
     serializer_class = MealSerializer
     # lookup_field = 'slug'
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
 
 
     @action(methods= ['POST'], detail= True)
@@ -25,8 +52,7 @@ class MealViewSet(viewsets.ModelViewSet):
             create or update
             '''
             meal = get_object_or_404(Meal, id=pk)
-            username = request.data['username']
-            user = get_object_or_404(User, username=username)
+            user = request.user
             stars = request.data['stars']
 
             try:
@@ -55,6 +81,9 @@ class MealViewSet(viewsets.ModelViewSet):
                 'message': 'stars not provided'
             }
             return Response(json, status=status.HTTP_400_BAD_REQUEST)
+
+
+
 
 
 class RatingViewSet(viewsets.ModelViewSet):
