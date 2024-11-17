@@ -3,10 +3,6 @@ from django.contrib.auth.models import User
 from django.utils.text import slugify
 from django.core.validators import MaxValueValidator, MinValueValidator
 
-from rest_framework.authtoken.models import Token
-from django.conf import settings
-from django.dispatch import receiver
-from django.db.models.signals import post_save
 
 
 
