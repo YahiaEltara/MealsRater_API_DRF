@@ -5,6 +5,8 @@ from rest_framework.response import Response
 from .models import Meal, Rating
 from .serializers import MealSerializer, RatingSerializer
 from django.contrib.auth.models import User
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 
 
@@ -61,5 +63,20 @@ class RatingViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.SearchFilter]
     # The search functionality in search_fields operates at the database level, unrelated to the serializer (2 RatingSerializer new fields).
     search_fields = ['meal__slug', 'user__username']
+
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def update (self, request, *args, **kwargs):
+        json = {
+            'message': 'It can not be used to update .. (:'
+        }
+        return Response(json, status=status.HTTP_400_BAD_REQUEST)
+    
+    def create (self, request, *args, **kwargs):
+        json = {
+            'message': 'It can not be used to create .. (:'
+        }
+        return Response(json, status=status.HTTP_400_BAD_REQUEST)
 
 
